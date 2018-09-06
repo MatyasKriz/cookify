@@ -1,0 +1,22 @@
+{
+  "manifest_version": 2,
+  "name": "Cookify",
+  "version": "0.1",
+  "description": "Shows the rating of CookPoint dishes.",
+  "icons": {
+    "96": "icons/cookify-96.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.cookpoint.cz/*"],
+      "js": ["md5.js", "jquery.js", "cookify.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "permissions": [
+    "notifications",
+    "webRequest",
+    "https://www.google.com/",
+    "http://192.168.0.108:3000/"
+  ]
+}
