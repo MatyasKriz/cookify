@@ -1,5 +1,9 @@
 console.log('start!');
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function insertAfter(newNode, referenceNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
@@ -76,28 +80,21 @@ for (var i = 0; i < names.length; i++) {
 }
 console.log(`Result hashes: ${hashes}`);
 
+console.log('Will remind you in an hour.');
+sleep(3600 000).then(function() {
+  console.log('Three seconds later');
+  chrome.runtime.sendMessage({
+    type: "notification",
+    options: {
+      type: "basic",
+      iconUrl: chrome.extension.getURL("./icons/cookify-96.png"),
+      title: "Hello there!",
+      message: "Have you rated your Cookify dish yet?"
+    }
+  });
+});
+
 // get the ratings
-var oReq = new XMLHttpRequest();
-
-function transferComplete(evt) {
-  console.log("The transfer is complete.");
-}
-
-function transferFailed(evt) {
-  console.log("An error occurred while transferring the file.");
-}
-
-function transferCanceled(evt) {
-  console.log("The transfer has been canceled by the user.");
-}
-
-oReq.upload.addEventListener("progress", updateProgress);
-oReq.upload.addEventListener("load", transferComplete);
-oReq.upload.addEventListener("error", transferFailed);
-oReq.upload.addEventListener("abort", transferCanceled);
-
-oReq.open("GET", "http://192.168.0.108:3000/api/v1/cookify/randomHash", true);
-oReq.send();
 
 // var xhr = new XMLHttpRequest();
 // xhr.open("GET", "http://192.168.0.108:3000/api/v1/cookify/randomHash", true);

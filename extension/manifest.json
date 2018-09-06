@@ -3,8 +3,12 @@
   "name": "Cookify",
   "version": "0.1",
   "description": "Shows the rating of CookPoint dishes.",
+  "homepage_url": "https://github.com/MatyasKriz/cookify/tree/master/extension",
   "icons": {
     "96": "icons/cookify-96.png"
+  },
+  "background": {
+    "scripts": ["background-script.js"]
   },
   "content_scripts": [
     {
@@ -15,6 +19,7 @@
   ],
   "permissions": [
     "notifications",
+    "activeTab",
     "webRequest",
     "https://www.google.com/",
     "http://192.168.0.108:3000/"
