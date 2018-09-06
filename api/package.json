@@ -1,0 +1,31 @@
+{
+  "name": "typescript-cookify-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "build": "gulp scripts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/body-parser": "0.0.33",
+    "@types/debug": "0.0.29",
+    "@types/express": "^4.16.0",
+    "@types/morgan": "^1.7.35",
+    "@types/node": "^6.0.117",
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^3.2.4",
+    "typescript": "^2.9.2"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "debug": "^2.6.9",
+    "express": "^4.16.3",
+    "morgan": "^1.9.0",
+    "web-ext": "^2.8.0"
+  }
+}
