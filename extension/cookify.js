@@ -1,9 +1,5 @@
 console.log('start!');
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 function insertAfter(newNode, referenceNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
@@ -80,19 +76,23 @@ for (var i = 0; i < names.length; i++) {
 }
 console.log(`Result hashes: ${hashes}`);
 
-console.log('Will remind you in an hour.');
-sleep(3600 000).then(function() {
-  console.log('Three seconds later');
+let remindButton = document.createElement('button');
+remindButton.innerHTML = 'Remind me';
+remindButton.className = 'button toprightcorner';
+remindButton.onclick = function() {
+  console.log('Will remind you in an hour.');
   chrome.runtime.sendMessage({
     type: "notification",
+    delay: 3600,
     options: {
-      type: "basic",
-      iconUrl: chrome.extension.getURL("./icons/cookify-96.png"),
-      title: "Hello there!",
-      message: "Have you rated your Cookify dish yet?"
+      type: 'basic',
+      iconUrl: chrome.extension.getURL('./icons/cookify-96.png'),
+      title: 'Hello there!',
+      message: 'Have you rated your Cookify dish yet'
     }
   });
-});
+}
+document.body.appendChild(remindButton);
 
 // get the ratings
 
