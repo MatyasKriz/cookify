@@ -1,5 +1,13 @@
 console.log('start!');
 
+function debug(obj) {
+    var out = '';
+    for (var i in obj) {
+        out += i + ": " + obj[i] + "\n";
+    }
+    return out;
+}
+
 function insertAfter(newNode, referenceNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
@@ -41,7 +49,10 @@ function stars(rating, dishHash) {
     let starRating = i;
     star.onclick = function() {
       // rating the dish
-      $.get(`192.168.0.108:3000/api/v1/cookify/${dishHash}`, { rating: starRating });
+      $.get(`https://cookify.internal.brightify.org/api/v1/cookify/${dishHash}?rating=${starRating}`,
+      function(data) {
+        console.log(`Got rating feedback: '${data.rating}' for dishHash '${dishHash}'`);
+      });
     };
     container.appendChild(star);
   }
@@ -88,56 +99,32 @@ remindButton.onclick = function() {
       type: 'basic',
       iconUrl: chrome.extension.getURL('./icons/cookify-96.png'),
       title: 'Hello there!',
-      message: 'Have you rated your Cookify dish yet'
+      message: 'Have you rated your Cookify dish yet?'
     }
   });
 }
 document.body.appendChild(remindButton);
 
-// get the ratings
+$.post(
+  "https://cookify.internal.brightify.org/api/v1/cookify/",
+  $.param({ dishHashes: hashes }, true),
+  function(data) {
+    let dishRatingsArray = JSON.parse(data).dishRatings;
 
-// var xhr = new XMLHttpRequest();
-// xhr.open("GET", "http://192.168.0.108:3000/api/v1/cookify/randomHash", true);
-// xhr.onreadystatechange = function() {
-//   if (xhr.readyState == 4) {
-//     console.log(`Hallo: ${xhr.response}`);
-//     // JSON.parse does not evaluate the attacker's scripts.
-//     var res = JSON.parse(xhr.responseText);
-//     console.log(`Got data: ${data}`);
-//     let dishRatings = res.dishRatings;
-//
-//     for (var i = 0; i < names.length; i++) {
-//       element = names[i];
-//       let dishTuple = dishRatings[hashes[i]];
-//       let [dishHash, dishRating] = dishTuple || [hashes[i], 0];
-//       element.style.color = colorRating(dishRating);
-//       insertAfter(stars(dishRating, dishHash), element);
-//     }
-//   }
-// }
-// xhr.send();
-// $.get(
-//   "http://192.168.0.108:3000/api/v1/cookify/randomHash",
-//   function(data) {
-//     console.log(`Got data: ${data}`);
-//   }
-// )
+    // create a hash map from the array of tuples
+    let dishRatings = dishRatingsArray.reduce(function(map, obj) {
+      map[obj.dishHash] = obj.rating;
+      return map;
+    }, {});
 
-// $.post(
-//     "http://192.168.0.108:3000/api/v1/cookify/",
-//     { dishHashes: hashes },
-//     function(data) {
-//       console.log(`Got data: ${data}`);
-//       let dishRatings = data.dishRatings;
-//
-//       for (var i = 0; i < names.length; i++) {
-//         element = names[i];
-//         let dishTuple = dishRatings[hashes[i]];
-//         let [dishHash, dishRating] = dishTuple || [hashes[i], 0];
-//         element.style.color = colorRating(dishRating);
-//         insertAfter(stars(dishRating, dishHash), element);
-//       }
-//     },
-//     "json");
+    for (var i = 0; i < names.length; i++) {
+      element = names[i];
+      let dishHash = hashes[i];
+      let dishRating = dishRatings[dishHash] || 0;
+      element.style.color = colorRating(dishRating);
+      insertAfter(stars(dishRating, dishHash), element);
+    }
+  },
+  "text");
 
 console.log('end!');
